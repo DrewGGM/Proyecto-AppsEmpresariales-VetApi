@@ -22,7 +22,7 @@ public class AppointmentEntity extends BaseJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuarioId", nullable = false)
-    private UsuarioEntity veterinarian;
+    private UserEntity veterinarian;
 
     @Column(name = "fechaHora", nullable = false)
     private LocalDateTime dateTime;

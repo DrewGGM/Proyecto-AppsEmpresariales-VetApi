@@ -1,19 +1,21 @@
 package com.vetapi.domain.entity;
 
 import com.vetapi.domain.entity.base.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-//Entidad de dominio que representa a un cliente/propietario de mascotas
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
-public class Owner extends BaseEntity {
+@AllArgsConstructor
+public class Customer extends BaseEntity {
     private String name;
     private String lastName;
     private String email;
@@ -21,37 +23,29 @@ public class Owner extends BaseEntity {
     private String address;
     private List<Pet> pets = new ArrayList<>();
 
-
-    //Constructor con atributos obligatorios
-    public Owner(String name, String lastName, String email, String phone) {
-        this.name = name;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        initialize();
-    }
-
-
-    //Método para agregar una mascota al propietario
+    // Agrega una mascota a la lista de mascotas del cliente
     public void addPet(Pet pet) {
         if (pet != null && !pets.contains(pet)) {
             pets.add(pet);
-            pet.setOwner(this);
+            pet.setCustomer(this);
         }
     }
 
-
-    //Método para eliminar una mascota del propietario
+    // Elimina una mascota de la lista de mascotas del cliente
     public void removePet(Pet pet) {
         if (pet != null && pets.contains(pet)) {
             pets.remove(pet);
-            pet.setOwner(null);
+            pet.setCustomer(null);
         }
     }
 
+    // Verifica si el email tiene un formato válido
+    public boolean hasValidEmail() {
+        return email != null && email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+    }
 
-    //Obtiene el nombre completo del propietario
-    public String getFullName() {
-        return name + " " + lastName;
+    // Verifica si el teléfono tiene un formato válido
+    public boolean hasValidPhone() {
+        return phone != null && phone.matches("^[0-9]{10}$");
     }
 }

@@ -1,18 +1,22 @@
 package com.vetapi.domain.entity;
 
 import com.vetapi.domain.entity.base.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 
-
-//Entidad de dominio que representa una mascota
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Pet extends BaseEntity {
     private String name;
     private LocalDate birthDate;
@@ -21,34 +25,45 @@ public class Pet extends BaseEntity {
     private String gender;
     private Float weight;
     private String photoUrl;
-    private Owner owner;
+    private Customer customer;
+    private List<Consultation> consultations = new ArrayList<>();
+    private List<Vaccination> vaccinations = new ArrayList<>();
+    private List<Appointment> appointments = new ArrayList<>();
 
-    //Constructor con atributos obligatorios
-    public Pet(String name, String species, Owner owner) {
-        this.name = name;
-        this.species = species;
-        this.owner = owner;
-        initialize();
-    }
-
-
-    //Calcula la edad de la mascota en años
-    public Integer calculateAge() {
+    // Calcula la edad de la mascota en años
+    public int calculateAge() {
         if (birthDate == null) {
-            return null;
+            return 0;
         }
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
+    // Verifica si la mascota es un adulto (más de 1 año)
+    public boolean isAdult() {
+        return calculateAge() >= 1;
+    }
 
-    //Verifica si la mascota necesita chequeo de acuerdo a su edad
-    public boolean needsCheckup() {
-        Integer age = calculateAge();
-        if (age == null) {
-            return false;
+    // Agrega una consulta a la mascota
+    public void addConsultation(Consultation consultation) {
+        if (consultation != null && !consultations.contains(consultation)) {
+            consultations.add(consultation);
+            consultation.setPet(this);
         }
+    }
 
-        // Las mascotas mayores necesitan chequeos más frecuentes
-        return age >= 7;
+    // Agrega una vacunación a la mascota
+    public void addVaccination(Vaccination vaccination) {
+        if (vaccination != null && !vaccinations.contains(vaccination)) {
+            vaccinations.add(vaccination);
+            vaccination.setPet(this);
+        }
+    }
+
+    // Agrega una cita a la mascota
+    public void addAppointment(Appointment appointment) {
+        if (appointment != null && !appointments.contains(appointment)) {
+            appointments.add(appointment);
+            appointment.setPet(this);
+        }
     }
 }

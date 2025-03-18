@@ -22,7 +22,7 @@ public class VaccinationEntity extends BaseJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuarioId", nullable = false)
-    private UsuarioEntity veterinarian;
+    private UserEntity veterinarian;
 
     @Column(name = "tipoVacuna")
     private String vaccineType;
