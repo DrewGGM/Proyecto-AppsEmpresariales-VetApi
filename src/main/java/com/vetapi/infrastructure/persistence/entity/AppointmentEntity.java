@@ -1,6 +1,5 @@
 package com.vetapi.infrastructure.persistence.entity;
 
-import com.vetapi.domain.entity.Pet;
 import com.vetapi.infrastructure.persistence.entity.base.BaseJpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,32 +9,32 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "cita")
+@Table(name = "appointments")
 @Getter
 @Setter
 @NoArgsConstructor
 public class AppointmentEntity extends BaseJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mascotaId", nullable = false)
+    @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuarioId", nullable = false)
+    @JoinColumn(name = "veterinarian_id", nullable = false)
     private UserEntity veterinarian;
 
-    @Column(name = "fechaHora", nullable = false)
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
-    @Column(name = "motivo")
+    @Column(name = "reason")
     private String reason;
 
-    @Column(name = "estado", nullable = false)
+    @Column(name = "status", nullable = false)
     private String status;
 
-    @Column(name = "confirmada")
+    @Column(name = "confirmed")
     private boolean confirmed;
 
-    @Column(name = "observaciones")
+    @Column(name = "observations")
     private String observations;
 }

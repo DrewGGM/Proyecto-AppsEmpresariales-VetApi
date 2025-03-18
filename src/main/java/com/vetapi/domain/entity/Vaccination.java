@@ -13,14 +13,14 @@ import java.time.LocalDate;
 public class Vaccination  extends BaseEntity {
 
     private Pet pet;
-    private Usuario veterinarian;
+    private User veterinarian;
     private String vaccineType;
     private LocalDate dateApplication;
     private LocalDate nextApplicationDate;
     private String batch;
     private String observations;
 
-    public Vaccination(Pet pet, Usuario veterinarian, String vaccineType, LocalDate dateApplication, LocalDate nextApplicationDate, String batch, String observations) {
+    public Vaccination(Pet pet, User veterinarian, String vaccineType, LocalDate dateApplication, LocalDate nextApplicationDate, String batch, String observations) {
         this.pet = pet;
         this.veterinarian = veterinarian;
         this.vaccineType = vaccineType;
@@ -28,6 +28,5 @@ public class Vaccination  extends BaseEntity {
         this.nextApplicationDate = nextApplicationDate;
         this.batch = batch;
         this.observations = observations;
-        initialize();
     }
 }

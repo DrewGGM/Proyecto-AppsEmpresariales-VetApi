@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 public class Appointment extends BaseEntity {
 
     private Pet pet;
-    private Usuario veterinarian;
+    private User veterinarian;
     private LocalDateTime dateTime;
     private String reason;
     private String status;
     private boolean confirmed;
     private String observations;
 
-    public Appointment(Pet pet, Usuario veterinarian, LocalDateTime dateTime, String reason, String status, boolean confirmed, String observations) {
+    public Appointment(Pet pet, User veterinarian, LocalDateTime dateTime, String reason, String status, boolean confirmed, String observations) {
         this.pet = pet;
         this.veterinarian = veterinarian;
         this.dateTime = dateTime;

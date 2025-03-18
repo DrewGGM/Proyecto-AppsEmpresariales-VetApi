@@ -26,7 +26,6 @@ public class Consultation extends BaseEntity {
         this.reason = reason;
         this.diagnosis = diagnosis;
         this.observations = observations;
-        initialize();
     }
 
 
