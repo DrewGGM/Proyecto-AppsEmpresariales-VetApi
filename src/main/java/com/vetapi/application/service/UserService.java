@@ -60,7 +60,17 @@ public class UserService {
             throw new InvalidDataException("Email already in use: " + updateDTO.getEmail());
         }
 
+        // Update fields from DTO to the domain entity
         mapper.updateUserFromDTO(updateDTO, user);
+
+        // Only update password if it's provided in the DTO
+        if (updateDTO.getPassword() == null || updateDTO.getPassword().isEmpty()) {
+            // Get the original user from repository again to ensure we have the current password
+            User originalUser = userRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));
+            user.setPassword(originalUser.getPassword());
+        }
+
         return mapper.toUserDTO(userRepository.save(user));
     }
 
@@ -70,5 +80,20 @@ public class UserService {
             throw new EntityNotFoundException("User not found with ID: " + id);
         }
         userRepository.delete(id);
+    }
+
+    @Transactional
+    public void hardDelete(Long id) {
+        if (!userRepository.findById(id).isPresent()) {
+            throw new EntityNotFoundException("User not found with ID: " + id);
+        }
+
+        // might want to add additional checks or validations here
+        // For example, check if the user has related records before hard deletion
+
+        boolean deleted = userRepository.hardDelete(id);
+        if (!deleted) {
+            throw new RuntimeException("Failed to delete user with ID: " + id);
+        }
     }
 }

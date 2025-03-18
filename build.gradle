@@ -54,3 +54,11 @@ tasks.withType(JavaCompile) {
             '-Amapstruct.unmappedTargetPolicy=IGNORE'
     ]
 }
+
+compileJava {
+	options.compilerArgs += ['-parameters']
+}
+
+compileTestJava {
+	options.compilerArgs += ['-parameters']
+}

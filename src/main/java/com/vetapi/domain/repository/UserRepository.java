@@ -32,6 +32,9 @@ public interface UserRepository {
     // Elimina un usuario de forma lógica (cambio de estado activo)
     void delete(Long id);
 
+    // Elimina un usuario de definitiva de la base de datos (sin opcion de recuperar)
+    boolean hardDelete(Long id);
+
     // Verifica si existe un usuario con el email indicado
     boolean existsByEmail(String email);
 

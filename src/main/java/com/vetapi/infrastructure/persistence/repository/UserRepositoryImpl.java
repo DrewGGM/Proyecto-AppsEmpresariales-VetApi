@@ -77,6 +77,15 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public boolean hardDelete(Long id) {
+        if (crudRepository.existsById(id)) {
+            crudRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return crudRepository.existsByEmail(email);
     }
