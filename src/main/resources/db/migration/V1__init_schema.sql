@@ -145,6 +145,3 @@ CREATE INDEX idx_appointments_veterinarian ON appointments (veterinarian_id);
 CREATE INDEX idx_appointments_datetime ON appointments (date_time);
 CREATE INDEX idx_documents_consultation ON documents (consultation_id);
 
--- Datos iniciales para pruebas (opcional)
-INSERT INTO users (name, last_name, email, password, role) VALUES 
-('Admin', 'Sistema', 'admin@vetapi.com', '$2a$10$uedJ6jkBS08x5mxZY6gV6.LAKSd202CiVutxz5VDq3TIyj9alkmIy', 'ADMIN');  -- password: admin123
