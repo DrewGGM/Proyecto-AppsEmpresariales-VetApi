@@ -1,15 +1,18 @@
 package com.vetapi.domain.entity;
 
 import com.vetapi.domain.entity.base.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Consultation extends BaseEntity {
 
     private Pet pet;
@@ -18,15 +21,22 @@ public class Consultation extends BaseEntity {
     private String reason;
     private String diagnosis;
     private String observations;
+    private List<Treatment>treatments;
 
-    public Consultation(Pet pet, User veterinarian, LocalDateTime date, String reason, String diagnosis, String observations) {
-        this.pet = pet;
-        this.veterinarian = veterinarian;
-        this.date = date;
-        this.reason = reason;
-        this.diagnosis = diagnosis;
-        this.observations = observations;
+    public void addDocument() {
     }
 
+    public void addTreatment(Treatment treatment){
+        if (treatment != null && !treatments.contains(treatment)){
+            treatments.add(treatment);
+            treatment.setConsultation(this);
+        }
+    }
 
+    public boolean isRecent(){
+        if(date == null){
+            return false;
+        }
+      return(date.isAfter(LocalDateTime.now().minusDays(7)));
+    }
 }

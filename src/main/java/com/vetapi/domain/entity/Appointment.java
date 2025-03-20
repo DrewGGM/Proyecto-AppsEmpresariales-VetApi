@@ -1,15 +1,18 @@
 package com.vetapi.domain.entity;
 
 import com.vetapi.domain.entity.base.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Appointment extends BaseEntity {
 
     private Pet pet;
@@ -20,14 +23,32 @@ public class Appointment extends BaseEntity {
     private boolean confirmed;
     private String observations;
 
-    public Appointment(Pet pet, User veterinarian, LocalDateTime dateTime, String reason, String status, boolean confirmed, String observations) {
-        this.pet = pet;
-        this.veterinarian = veterinarian;
-        this.dateTime = dateTime;
-        this.reason = reason;
-        this.status = status;
-        this.confirmed = confirmed;
-        this.observations = observations;
+   public void confirm(){
+       this.confirmed = true;
+   }
+
+   public void complete(){
+       this.status = "COMPLETED";
+   }
+
+    public void cancel(){
+        this.status = "CANCELLED";
     }
 
+    public boolean isPending(){
+       if (dateTime == null){
+           return false;
+       }
+if (dateTime.isBefore(LocalDateTime.now())){
+    return true;
+}
+return false;
+    }
+
+    public boolean  isToday(){
+       if (dateTime == null){
+           return false;
+       }
+       return (dateTime.toLocalDate().equals(LocalDate.now()));
+    }
 }
