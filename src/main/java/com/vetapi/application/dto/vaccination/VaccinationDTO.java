@@ -1,7 +1,5 @@
-package com.vetapi.application.dto.vaccionation;
+package com.vetapi.application.dto.vaccination;
 
-import com.vetapi.domain.entity.Pet;
-import com.vetapi.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +15,7 @@ import java.time.LocalDateTime;
 public class VaccinationDTO {
     private long id;
     private String petName;
-    private long  petId;
+    private long petId;
     private String veterinarianName;
     private long veterinarianId;
     private String vaccineType;

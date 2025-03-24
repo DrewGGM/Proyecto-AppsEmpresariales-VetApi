@@ -1,6 +1,5 @@
 package com.vetapi.application.dto.treatment;
 
-import com.vetapi.domain.entity.Consultation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ import java.time.LocalDate;
 public class TreatmentCreateDTO {
 
     @NotNull(message = "Id pet is required")
-    private String petId;
+    private long petId;
 
     @NotNull(message = "Id consultation is required")
     private long consultationId;
@@ -34,6 +33,6 @@ public class TreatmentCreateDTO {
     @NotBlank(message = "startDate is required")
     private LocalDate startDate;
 
-    private  LocalDate endDate;
-    private  String observations;
+    private LocalDate endDate;
+    private String observations;
 }

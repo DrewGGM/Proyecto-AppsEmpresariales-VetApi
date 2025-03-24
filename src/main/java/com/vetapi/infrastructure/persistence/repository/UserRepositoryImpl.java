@@ -1,6 +1,6 @@
 package com.vetapi.infrastructure.persistence.repository;
 
-import com.vetapi.application.mapper.UserMapper;
+import com.vetapi.application.mapper.UserDTOMapper;
 import com.vetapi.domain.entity.User;
 import com.vetapi.domain.repository.UserRepository;
 import com.vetapi.infrastructure.persistence.crud.UserCrudRepository;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class UserRepositoryImpl implements UserRepository {
 
     private final UserCrudRepository crudRepository;
-    private final UserMapper mapper;
+    private final UserDTOMapper mapper;
 
     @Override
     public List<User> findAll() {

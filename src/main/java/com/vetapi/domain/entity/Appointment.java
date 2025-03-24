@@ -23,32 +23,29 @@ public class Appointment extends BaseEntity {
     private boolean confirmed;
     private String observations;
 
-   public void confirm(){
-       this.confirmed = true;
-   }
+    public void confirm() {
+        this.confirmed = true;
+    }
 
-   public void complete(){
-       this.status = "COMPLETED";
-   }
+    public void complete() {
+        this.status = "COMPLETED";
+    }
 
-    public void cancel(){
+    public void cancel() {
         this.status = "CANCELLED";
     }
 
-    public boolean isPending(){
-       if (dateTime == null){
-           return false;
-       }
-if (dateTime.isBefore(LocalDateTime.now())){
-    return true;
-}
-return false;
+    public boolean isPending() {
+        if (dateTime == null) {
+            return false;
+        }
+        return dateTime.isAfter(LocalDateTime.now());
     }
 
-    public boolean  isToday(){
-       if (dateTime == null){
-           return false;
-       }
-       return (dateTime.toLocalDate().equals(LocalDate.now()));
+    public boolean isToday() {
+        if (dateTime == null) {
+            return false;
+        }
+        return (dateTime.toLocalDate().equals(LocalDate.now()));
     }
 }

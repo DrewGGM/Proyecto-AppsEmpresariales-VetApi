@@ -4,11 +4,12 @@ import com.vetapi.application.dto.user.UserCreateDTO;
 import com.vetapi.application.dto.user.UserDTO;
 import com.vetapi.application.dto.user.UserListDTO;
 import com.vetapi.application.dto.user.UserUpdateDTO;
-import com.vetapi.application.mapper.UserMapper;
+import com.vetapi.application.mapper.UserDTOMapper;
 import com.vetapi.domain.entity.User;
 import com.vetapi.domain.exception.EntityNotFoundException;
 import com.vetapi.domain.exception.InvalidDataException;
 import com.vetapi.domain.repository.UserRepository;
+import com.vetapi.infrastructure.security.BcryptHashService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,8 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper mapper;
+    private final UserDTOMapper mapper;
+    private final BcryptHashService bcryptHashService;
 
     public List<UserListDTO> findAll() {
         return mapper.toUserListDTOList(userRepository.findAll());
@@ -45,7 +47,10 @@ public class UserService {
         }
 
         User user = mapper.toUser(createDTO);
-        // No encryption for now as per requirement
+
+        // Hash the password before saving
+        user.setPassword(bcryptHashService.hashPassword(createDTO.getPassword()));
+
         return mapper.toUserDTO(userRepository.save(user));
     }
 
@@ -63,8 +68,10 @@ public class UserService {
         // Update fields from DTO to the domain entity
         mapper.updateUserFromDTO(updateDTO, user);
 
-        // Only update password if it's provided in the DTO
-        if (updateDTO.getPassword() == null || updateDTO.getPassword().isEmpty()) {
+        // Only hash and update password if it's provided in the DTO
+        if (updateDTO.getPassword() != null && !updateDTO.getPassword().isEmpty()) {
+            user.setPassword(bcryptHashService.hashPassword(updateDTO.getPassword()));
+        } else {
             // Get the original user from repository again to ensure we have the current password
             User originalUser = userRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + id));

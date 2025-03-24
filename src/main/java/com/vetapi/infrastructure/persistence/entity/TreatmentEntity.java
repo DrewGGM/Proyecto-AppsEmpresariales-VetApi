@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "treatments") 
+@Table(name = "treatments")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,7 +27,7 @@ public class TreatmentEntity extends BaseJpaEntity {
     private String medicine;
 
     @Column(name = "dosage")
-    private String dose;
+    private String dosage;
 
     @Column(name = "frequency")
     private String frequency;
@@ -39,7 +39,7 @@ public class TreatmentEntity extends BaseJpaEntity {
     private LocalDate endDate;
 
     @Column(name = "completed")
-    private boolean filled;
+    private boolean completed;
 
     @Column(name = "observations")
     private String observations;

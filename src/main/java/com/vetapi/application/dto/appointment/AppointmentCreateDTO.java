@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 public class AppointmentCreateDTO {
 
     @NotNull(message = "Id pet is required")
-    private String petId;
+    private long petId;
 
     @NotNull(message = "Id veterinarian is required")
-    private long veterinarian_id;
+    private long veterinarianId;
 
     @NotNull(message = "Date time is required")
     private LocalDateTime dateTime;

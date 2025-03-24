@@ -13,12 +13,15 @@ import org.mapstruct.MappingTarget;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public interface UserDTOMapper {
 
     // Mappings between domain and DTO
     UserDTO toUserDTO(User user);
+
     List<UserDTO> toUserDTOList(List<User> users);
+
     UserListDTO toUserListDTO(User user);
+
     List<UserListDTO> toUserListDTOList(List<User> users);
 
     @Mapping(target = "id", ignore = true)
