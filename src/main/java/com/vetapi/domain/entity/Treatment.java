@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.SplittableRandom;
 
 @Getter
 @Setter
@@ -16,35 +15,35 @@ import java.util.SplittableRandom;
 @AllArgsConstructor
 public class Treatment extends BaseEntity {
 
-    private  Pet pet;
+    private Pet pet;
     private Consultation consultation;
     private String medicine;
     private String dosage;
     private String frequency;
     private LocalDate startDate;
-    private  LocalDate endDate;
-    private  boolean completed;
-    private  String observations;
+    private LocalDate endDate;
+    private boolean completed;
+    private String observations;
 
 
-    public boolean  isActive(){
+    public boolean isActive() {
 
-        if (!completed){
-            if (LocalDate.now().isAfter(startDate) && LocalDate.now().isBefore(endDate)){
+        if (!completed) {
+            if (LocalDate.now().isAfter(startDate) && LocalDate.now().isBefore(endDate)) {
                 return true;
             }
         }
         return false;
     }
 
-    public int getDurationDays(){
-        if(startDate == null || endDate == null){
+    public int getDurationDays() {
+        if (startDate == null || endDate == null) {
             return -1;
         }
-        return (Period.between(startDate,endDate).getDays());
+        return (Period.between(startDate, endDate).getDays());
     }
 
-    public  void markAsCompleted(){
+    public void markAsCompleted() {
         this.completed = true;
     }
 

@@ -1,10 +1,11 @@
 package com.vetapi.infrastructure.persistence.repository;
 
-import com.vetapi.application.mapper.UserMapper;
+import com.vetapi.application.mapper.UserDTOMapper;
 import com.vetapi.domain.entity.User;
 import com.vetapi.domain.repository.UserRepository;
 import com.vetapi.infrastructure.persistence.crud.UserCrudRepository;
 import com.vetapi.infrastructure.persistence.entity.UserEntity;
+import com.vetapi.infrastructure.persistence.mapper.UserEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserRepositoryImpl implements UserRepository {
 
     private final UserCrudRepository crudRepository;
-    private final UserMapper mapper;
+    private final UserEntityMapper mapper;
 
     @Override
     public List<User> findAll() {

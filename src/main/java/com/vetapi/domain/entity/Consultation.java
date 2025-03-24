@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -21,22 +22,27 @@ public class Consultation extends BaseEntity {
     private String reason;
     private String diagnosis;
     private String observations;
-    private List<Treatment>treatments;
+    private List<Treatment> treatments = new ArrayList<>();
+    private List<Document> documents = new ArrayList<>();
 
-    public void addDocument() {
+    public void addDocument(Document document) {
+        if (document != null && !documents.contains(document)) {
+            documents.add(document);
+            document.setConsultation(this);
+        }
     }
 
-    public void addTreatment(Treatment treatment){
-        if (treatment != null && !treatments.contains(treatment)){
+    public void addTreatment(Treatment treatment) {
+        if (treatment != null && !treatments.contains(treatment)) {
             treatments.add(treatment);
             treatment.setConsultation(this);
         }
     }
 
-    public boolean isRecent(){
-        if(date == null){
+    public boolean isRecent() {
+        if (date == null) {
             return false;
         }
-      return(date.isAfter(LocalDateTime.now().minusDays(7)));
+        return (date.isAfter(LocalDateTime.now().minusDays(7)));
     }
 }

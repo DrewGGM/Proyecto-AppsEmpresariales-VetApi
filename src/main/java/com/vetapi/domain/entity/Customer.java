@@ -23,19 +23,23 @@ public class Customer extends BaseEntity {
     private String address;
     private List<Pet> pets = new ArrayList<>();
 
-    // Agrega una mascota a la lista de mascotas del cliente
     public void addPet(Pet pet) {
         if (pet != null && !pets.contains(pet)) {
             pets.add(pet);
-            pet.setCustomer(this);
+            // Verifica si ya existe la relación inversa para evitar recursión infinita
+            if (pet.getCustomer() != this) {
+                pet.setCustomer(this);
+            }
         }
     }
 
-    // Elimina una mascota de la lista de mascotas del cliente
     public void removePet(Pet pet) {
         if (pet != null && pets.contains(pet)) {
             pets.remove(pet);
-            pet.setCustomer(null);
+            // Verifica si existe la relación inversa para evitar recursión infinita
+            if (pet.getCustomer() == this) {
+                pet.setCustomer(null);
+            }
         }
     }
 

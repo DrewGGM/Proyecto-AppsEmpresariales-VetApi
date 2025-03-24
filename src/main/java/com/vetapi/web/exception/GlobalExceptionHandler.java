@@ -2,7 +2,9 @@ package com.vetapi.web.exception;
 
 import com.vetapi.domain.exception.EntityNotFoundException;
 import com.vetapi.domain.exception.InvalidDataException;
-import com.vetapi.domain.exception.UnauthorizedException;
+import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,10 +18,14 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleEntityNotFoundException(EntityNotFoundException ex) {
+        logger.error("Entidad no encontrada: {}", ex.getMessage());
+
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Resource not found");
+        errorResponse.put("error", "Recurso no encontrado");
         errorResponse.put("message", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
@@ -27,24 +33,39 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<Map<String, String>> handleInvalidDataException(InvalidDataException ex) {
+        logger.error("Datos inválidos: {}", ex.getMessage());
+
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Invalid data");
+        errorResponse.put("error", "Datos inválidos");
         errorResponse.put("message", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<Map<String, String>> handleUnauthorizedException(UnauthorizedException ex) {
-        Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Unauthorized");
-        errorResponse.put("message", ex.getMessage());
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleConstraintViolationException(ConstraintViolationException ex) {
+        logger.error("Violación de restricciones: {}", ex.getMessage());
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        Map<String, Object> errorResponse = new HashMap<>();
+        Map<String, String> validationErrors = new HashMap<>();
+
+        ex.getConstraintViolations().forEach(violation -> {
+            String fieldName = violation.getPropertyPath().toString();
+            String errorMessage = violation.getMessage();
+            validationErrors.put(fieldName, errorMessage);
+        });
+
+        errorResponse.put("error", "Error de validación");
+        errorResponse.put("details", validationErrors);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    // logging para los manejadores existentes para mejorar depuración
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        logger.error("Error de validación en argumentos: {}", ex.getMessage());
+
         Map<String, Object> errorResponse = new HashMap<>();
         Map<String, String> validationErrors = new HashMap<>();
 
@@ -54,7 +75,7 @@ public class GlobalExceptionHandler {
             validationErrors.put(fieldName, errorMessage);
         });
 
-        errorResponse.put("error", "Validation error");
+        errorResponse.put("error", "Error de validación");
         errorResponse.put("details", validationErrors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -62,9 +83,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception ex) {
+        logger.error("Error inesperado: {}", ex.getMessage(), ex);
+
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Internal server error");
-        errorResponse.put("message", ex.getMessage());
+        errorResponse.put("error", "Error interno del servidor");
+        errorResponse.put("message", "Se ha producido un error inesperado. Por favor contacte al administrador.");
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }

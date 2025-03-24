@@ -1,7 +1,5 @@
 package com.vetapi.application.dto.treatment;
 
-import com.vetapi.domain.entity.Consultation;
-import com.vetapi.domain.entity.Pet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,19 +15,19 @@ import java.time.LocalDateTime;
 public class TreatmentDTO {
     private long id;
     private String petName;
-    private long  petId;
+    private long petId;
     private long consultationId;
     private String medicine;
     private String dosage;
     private String frequency;
     private LocalDate startDate;
-    private  LocalDate endDate;
-    private  boolean completed;
-    private  String observations;
+    private LocalDate endDate;
+    private boolean completed;
+    private String observations;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean active;
-    private  boolean  isActive;
+    private boolean isActive;
     private int getDurationDays;
 
 }

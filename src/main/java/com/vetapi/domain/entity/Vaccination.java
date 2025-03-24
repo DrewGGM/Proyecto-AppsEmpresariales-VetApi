@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 
 @Getter
@@ -16,7 +15,7 @@ import java.time.Period;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Vaccination  extends BaseEntity {
+public class Vaccination extends BaseEntity {
 
     private Pet pet;
     private User veterinarian;
@@ -26,18 +25,18 @@ public class Vaccination  extends BaseEntity {
     private String lotNumber;
     private String observations;
 
-public boolean isUpToDate(){
-    if (nextApplicationDate == null){
-        return true;
+    public boolean isUpToDate() {
+        if (nextApplicationDate == null) {
+            return true;
+        }
+        return (LocalDate.now().isBefore(nextApplicationDate));
     }
-    return (LocalDate.now().isBefore(nextApplicationDate));
-}
 
-public int daysUntilNextApplication(){
-    if(nextApplicationDate == null){
-        return -1;
+    public int daysUntilNextApplication() {
+        if (nextApplicationDate == null) {
+            return -1;
+        }
+        return (Period.between(LocalDate.now(), nextApplicationDate).getDays());
     }
-  return(Period.between(LocalDate.now(),nextApplicationDate).getDays());
-}
 
 }

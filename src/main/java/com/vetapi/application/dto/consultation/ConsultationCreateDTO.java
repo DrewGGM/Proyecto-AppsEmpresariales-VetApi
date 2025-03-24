@@ -3,23 +3,23 @@ package com.vetapi.application.dto.consultation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConsultationCreateDTO {
 
     @NotNull(message = "Id pet is required")
-    private String petId;
+    private long petId;
 
     @NotNull(message = "Id veterinarian is required")
-    private long veterinarian_id;
+    private long veterinarianId;
 
     @NotNull(message = "date is required")
     private LocalDateTime date;

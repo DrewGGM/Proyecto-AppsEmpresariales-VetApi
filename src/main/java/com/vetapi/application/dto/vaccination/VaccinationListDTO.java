@@ -1,4 +1,4 @@
-package com.vetapi.application.dto.vaccionation;
+package com.vetapi.application.dto.vaccination;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

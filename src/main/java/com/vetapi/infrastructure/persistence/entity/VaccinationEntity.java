@@ -27,14 +27,15 @@ public class VaccinationEntity extends BaseJpaEntity {
     private String vaccineType;
 
     @Column(name = "application_date", nullable = false)
-    private LocalDate dateApplication;
+    private LocalDate applicationDate;
 
     @Column(name = "next_application_date")
     private LocalDate nextApplicationDate;
 
     @Column(name = "lot_number")
-    private String batch;
+    private String lotNumber;
 
     @Column(name = "observations")
     private String observations;
+
 }

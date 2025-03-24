@@ -4,10 +4,11 @@ import com.vetapi.application.dto.auth.LoginRequest;
 import com.vetapi.application.dto.auth.LoginResponse;
 import com.vetapi.domain.entity.User;
 import com.vetapi.domain.repository.UserRepository;
+import com.vetapi.infrastructure.security.BcryptHashService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -15,7 +16,9 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final BcryptHashService bcryptHashService;
 
+    @Transactional
     public LoginResponse login(LoginRequest request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
@@ -28,15 +31,15 @@ public class AuthService {
 
         User user = userOptional.get();
 
-        // Comparación directa de contraseña (sin encriptación por ahora)
-        if (!user.getPassword().equals(request.getPassword())) {
+        // Verify password using BCrypt
+        if (!bcryptHashService.verifyPassword(request.getPassword(), user.getPassword())) {
             return LoginResponse.builder()
                     .success(false)
                     .message("Invalid credentials")
                     .build();
         }
 
-        // Actualizar el último acceso
+        // Update last access time
         user.updateLastAccess();
         userRepository.save(user);
 
@@ -48,6 +51,15 @@ public class AuthService {
                 .role(user.getRole())
                 .success(true)
                 .message("Login successful")
+                .build();
+    }
+
+    @Transactional
+    public LoginResponse refreshToken(String refreshToken) {
+        // This will be implemented when JWT is added
+        return LoginResponse.builder()
+                .success(false)
+                .message("Refresh token functionality not yet implemented")
                 .build();
     }
 }

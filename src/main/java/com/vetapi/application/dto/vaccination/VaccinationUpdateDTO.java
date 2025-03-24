@@ -1,4 +1,4 @@
-package com.vetapi.application.dto.vaccionation;
+package com.vetapi.application.dto.vaccination;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,13 +13,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VaccinationCreateDTO {
-
-    @NotNull(message = "Id pet is required")
-    private String petId;
-
-    @NotNull(message = "Id veterinarian is required")
-    private long veterinarian_id;
+public class VaccinationUpdateDTO {
 
     @NotBlank(message = " Vaccine Type is required")
     private String vaccineType;
@@ -30,6 +24,4 @@ public class VaccinationCreateDTO {
     private LocalDate nextApplicationDate;
     private String lotNumber;
     private String observations;
-
-
 }

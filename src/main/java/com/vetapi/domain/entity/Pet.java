@@ -43,19 +43,23 @@ public class Pet extends BaseEntity {
         return calculateAge() >= 1;
     }
 
-    // Agrega una consulta a la mascota
     public void addConsultation(Consultation consultation) {
         if (consultation != null && !consultations.contains(consultation)) {
             consultations.add(consultation);
-            consultation.setPet(this);
+            // Verifica si ya existe la relación inversa para evitar recursión infinita
+            if (consultation.getPet() != this) {
+                consultation.setPet(this);
+            }
         }
     }
 
-    // Agrega una vacunación a la mascota
-    public void addVaccination(Vaccination vaccination) {
-        if (vaccination != null && !vaccinations.contains(vaccination)) {
-            vaccinations.add(vaccination);
-            vaccination.setPet(this);
+    public void removeConsultation(Consultation consultation) {
+        if (consultation != null && consultations.contains(consultation)) {
+            consultations.remove(consultation);
+            // Verifica si existe la relación inversa para evitar recursión infinita
+            if (consultation.getPet() == this) {
+                consultation.setPet(null);
+            }
         }
     }
 

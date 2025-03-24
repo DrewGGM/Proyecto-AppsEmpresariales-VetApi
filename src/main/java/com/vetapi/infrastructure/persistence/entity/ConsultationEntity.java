@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "consultations")
@@ -34,5 +36,12 @@ public class ConsultationEntity extends BaseJpaEntity {
 
     @Column(name = "observations")
     private String observations;
+
+    @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TreatmentEntity> treatments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<DocumentEntity> documents = new ArrayList<>();
+
 
 }

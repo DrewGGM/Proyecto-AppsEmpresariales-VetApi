@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -19,8 +18,8 @@ public class TreatmentListDTO {
     private String dosage;
     private String frequency;
     private LocalDate startDate;
-    private  LocalDate endDate;
-    private  boolean  isActive;
-    private  boolean completed;
+    private LocalDate endDate;
+    private boolean isActive;
+    private boolean completed;
 
 }
