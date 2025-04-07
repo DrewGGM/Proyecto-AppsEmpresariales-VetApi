@@ -27,11 +27,11 @@ public class Treatment extends BaseEntity {
 
 
     public boolean isActive() {
-
-        if (!completed) {
-            if (LocalDate.now().isAfter(startDate) && LocalDate.now().isBefore(endDate)) {
+        if (!this.isCompleted() && super.isActive()) {
+            if (this.endDate == null) {
                 return true;
             }
+            return LocalDate.now().isBefore(this.endDate) || LocalDate.now().isEqual(this.endDate);
         }
         return false;
     }

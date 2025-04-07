@@ -16,10 +16,12 @@ import java.util.List;
 public interface TreatmentDTOMapper {
 
 
-    @Mapping(target = "petName",source = "pet.name")
+    @Mapping(target = "petName", source = "pet.name")
     @Mapping(target = "petId", source = "pet.id")
-    @Mapping(target = "isActive",expression = "java(treatment.isActive())")
-    @Mapping(target = "getDurationDays",expression = "java(treatment.getDurationDays())")
+    @Mapping(target = "consultationId", source = "consultation.id")
+    @Mapping(target = "isActive", expression = "java(treatment.isActive())")
+    @Mapping(target = "getDurationDays", expression = "java(treatment.getDurationDays())")
+    @Mapping(target = "active", constant = "true")
     TreatmentDTO toTreatmentDto(Treatment treatment);
 
     List<TreatmentDTO> toTreatmentDTOList(List<Treatment> treatments);

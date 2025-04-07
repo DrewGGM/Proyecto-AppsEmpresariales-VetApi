@@ -2,7 +2,9 @@ package com.vetapi.infrastructure.persistence.repository;
 
 import com.vetapi.domain.entity.Document;
 import com.vetapi.domain.repository.DocumentRepository;
+import com.vetapi.infrastructure.persistence.crud.ConsultationCrudRepository;
 import com.vetapi.infrastructure.persistence.crud.DocumentCrudRepository;
+import com.vetapi.infrastructure.persistence.entity.ConsultationEntity;
 import com.vetapi.infrastructure.persistence.entity.DocumentEntity;
 import com.vetapi.infrastructure.persistence.mapper.DocumentEntityMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 public class DocumentRepositoryImpl implements DocumentRepository {
 
     private final DocumentCrudRepository crudRepository;
+    private final ConsultationCrudRepository consultationCrudRepository;
     private final DocumentEntityMapper mapper;
 
     @Override
@@ -54,10 +57,23 @@ public class DocumentRepositoryImpl implements DocumentRepository {
 
         // Set consultation relationship if document has a consultation
         if (document.getConsultation() != null) {
-            entity.setConsultation(crudRepository.getReferenceById(document.getConsultation().getId()).getConsultation());
+            // Usar el repositorio de consultas para obtener la entidad de consulta
+            ConsultationEntity consultationEntity = consultationCrudRepository.getReferenceById(document.getConsultation().getId());
+            entity.setConsultation(consultationEntity);
         }
 
-        return mapper.toDocument(crudRepository.save(entity));
+        // Guardar la entidad
+        DocumentEntity savedEntity = crudRepository.save(entity);
+
+        // Convertir a dominio
+        Document savedDocument = mapper.toDocument(savedEntity);
+
+        // Mantener la referencia a la consulta original
+        if (document.getConsultation() != null) {
+            savedDocument.setConsultation(document.getConsultation());
+        }
+
+        return savedDocument;
     }
 
     @Override

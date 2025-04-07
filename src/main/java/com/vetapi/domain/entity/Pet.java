@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import lombok.Builder;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -26,8 +27,16 @@ public class Pet extends BaseEntity {
     private Float weight;
     private String photoUrl;
     private Customer customer;
+    private Long customerId;
+    private String customerName;
+
+    @Builder.Default
     private List<Consultation> consultations = new ArrayList<>();
+
+    @Builder.Default
     private List<Vaccination> vaccinations = new ArrayList<>();
+
+    @Builder.Default
     private List<Appointment> appointments = new ArrayList<>();
 
     // Calcula la edad de la mascota en años

@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/appointments")
 @RequiredArgsConstructor
 public class AppointmentController {
-    private AppointmentService service;
+    private final AppointmentService service;
 
     @PostMapping
     public ResponseEntity<AppointmentDTO> create(@Valid @RequestBody AppointmentCreateDTO createDTO) {

@@ -1,6 +1,7 @@
 package com.vetapi.application.dto.treatment;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class TreatmentUpdateDTO {
     @NotBlank(message = "frequency is required")
     private String frequency;
 
-    @NotBlank(message = "startDate is required")
+    @NotNull(message = "startDate is required")
     private LocalDate startDate;
 
     private boolean completed;

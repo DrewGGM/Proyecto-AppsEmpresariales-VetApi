@@ -1,7 +1,9 @@
 package com.vetapi.application.dto.user;
 
+import com.vetapi.domain.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +29,7 @@ public class UserCreateDTO {
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
 
-    @NotBlank(message = "Role is required")
-    private String role;
+    @NotNull(message = "Role is required")
+    private Role role;
+
 }

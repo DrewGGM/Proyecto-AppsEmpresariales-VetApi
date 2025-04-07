@@ -2,10 +2,7 @@ package com.vetapi.infrastructure.persistence.entity;
 
 import com.vetapi.infrastructure.persistence.entity.base.BaseJpaEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -39,11 +36,16 @@ public class UserEntity extends BaseJpaEntity {
     @Column(name = "last_access")
     private LocalDateTime lastAccess;
 
-    // Un usuario (veterinario) tiene muchas consultas
-    @OneToMany(mappedBy = "veterinarian", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "veterinarian", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ConsultationEntity> consultations = new ArrayList<>();
 
-    // Un usuario (veterinario) tiene muchas vacunaciones
-    @OneToMany(mappedBy = "veterinarian", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "veterinarian", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VaccinationEntity> vaccinations = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "veterinarian", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AppointmentEntity> appointments = new ArrayList<>();
+
 }

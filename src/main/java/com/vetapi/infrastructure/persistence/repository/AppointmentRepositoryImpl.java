@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class AppointmentRepositoryImpl implements AppointmentRepository {
-    private AppointmentCrudRepository crudRepository;
-    private AppointmentEntityMapper mapper;
-    private UserCrudRepository userCrudRepository;
-    private PetCrudRepository petCrudRepository;
+    private final AppointmentCrudRepository crudRepository;
+    private final AppointmentEntityMapper mapper;
+    private final UserCrudRepository userCrudRepository;
+    private final PetCrudRepository petCrudRepository;
     @Override
     public Appointment save (Appointment appointment){
         AppointmentEntity  entity= mapper.toEntity(appointment);

@@ -14,6 +14,7 @@ import com.vetapi.domain.repository.PetRepository;
 import com.vetapi.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,12 +25,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
-    private AppointmentRepository repository;
-    private AppointmentDTOMapper mapper;
-   private PetRepository petRepository;
-   private UserRepository userRepository;
+    private final AppointmentRepository repository;
+    private final AppointmentDTOMapper mapper;
+   private final PetRepository petRepository;
+   private final UserRepository userRepository;
 
-
+    @Transactional
     public AppointmentDTO save (AppointmentCreateDTO appointment){
         Appointment appointment1=mapper.toAppointment(appointment);
         Optional<Pet> pet=  petRepository.findById(appointment.getPetId());
@@ -76,6 +77,7 @@ public class AppointmentService {
                 .map(mapper::toAppointmentDTO)
                 .collect(Collectors.toList());
     }
+    @Transactional
    public boolean delete(Long id){
       Optional<Appointment> appointment= repository.findById(id);
         if (appointment.isPresent()){
@@ -84,6 +86,7 @@ public class AppointmentService {
         }
         return false;
    }
+    @Transactional
     public AppointmentDTO update(AppointmentUpdateDTO appointment, Long id){
         Appointment appointment1 = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Appointment not found with ID: " + id));

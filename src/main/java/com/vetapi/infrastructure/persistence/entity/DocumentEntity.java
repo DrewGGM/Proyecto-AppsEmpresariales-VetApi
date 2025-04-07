@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DocumentEntity extends BaseJpaEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "consultation_id", nullable = false)
     private ConsultationEntity consultation;
 

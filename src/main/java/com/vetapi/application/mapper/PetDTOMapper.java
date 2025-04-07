@@ -14,8 +14,8 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface PetDTOMapper {
 
-    @Mapping(target = "customerName", source = "customer.name")
-    @Mapping(target = "customerId", source = "customer.id")
+    @Mapping(target = "customerName", source = "customerName")
+    @Mapping(target = "customerId", source = "customerId")
     @Mapping(target = "consultationCount", expression = "java(pet.getConsultations().size())")
     @Mapping(target = "vaccinationCount", expression = "java(pet.getVaccinations().size())")
     @Mapping(target = "appointmentCount", expression = "java(pet.getAppointments().size())")
@@ -25,7 +25,7 @@ public interface PetDTOMapper {
 
     List<PetDTO> toPetDTOList(List<Pet> pets);
 
-    @Mapping(target = "customerName", source = "customer.name")
+    @Mapping(target = "customerName", source = "customerName")
     @Mapping(target = "age", expression = "java(pet.calculateAge())")
     PetListDTO toPetListDTO(Pet pet);
 

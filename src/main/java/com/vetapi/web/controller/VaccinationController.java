@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VaccinationController {
 
-    private VaccinationService service;
+    private final VaccinationService service;
     @PostMapping
     public ResponseEntity<VaccinationDTO> create(@Valid @RequestBody VaccinationCreateDTO createDTO) {
         try {

@@ -2,10 +2,7 @@ package com.vetapi.infrastructure.persistence.entity;
 
 import com.vetapi.infrastructure.persistence.entity.base.BaseJpaEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -35,7 +32,7 @@ public class CustomerEntity extends BaseJpaEntity {
     @Column(length = 200)
     private String address;
 
-    // Una relación bidireccional: un cliente tiene muchas mascotas
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PetEntity> pets = new ArrayList<>();
 }

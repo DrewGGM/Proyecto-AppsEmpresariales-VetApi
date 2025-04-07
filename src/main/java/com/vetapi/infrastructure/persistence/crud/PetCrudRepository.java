@@ -29,4 +29,7 @@ public interface PetCrudRepository extends JpaRepository<PetEntity, Long> {
 
     @Query("SELECT COUNT(v) FROM VaccinationEntity v WHERE v.pet.id = :petId")
     int countVaccinationsByPetId(@Param("petId") Long petId);
+
+    @Query("SELECT COUNT(c) > 0 FROM ConsultationEntity c WHERE c.pet.id = :petId")
+    boolean hasConsultations(@Param("petId") Long petId);
 }

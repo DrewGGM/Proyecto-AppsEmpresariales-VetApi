@@ -30,4 +30,7 @@ public interface CustomerRepository {
 
     // Obtiene la cantidad de mascotas de un cliente
     int countPets(Long customerId);
+
+    boolean existsById(Long id);
+
 }

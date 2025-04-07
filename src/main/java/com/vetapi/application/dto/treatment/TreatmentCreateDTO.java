@@ -16,10 +16,10 @@ import java.time.LocalDate;
 public class TreatmentCreateDTO {
 
     @NotNull(message = "Id pet is required")
-    private long petId;
+    private Long petId;
 
     @NotNull(message = "Id consultation is required")
-    private long consultationId;
+    private Long consultationId;
 
     @NotBlank(message = "medicine is required")
     private String medicine;
@@ -30,7 +30,7 @@ public class TreatmentCreateDTO {
     @NotBlank(message = "frequency is required")
     private String frequency;
 
-    @NotBlank(message = "startDate is required")
+    @NotNull(message = "startDate is required")
     private LocalDate startDate;
 
     private LocalDate endDate;

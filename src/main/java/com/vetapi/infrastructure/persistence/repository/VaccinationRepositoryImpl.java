@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class VaccinationRepositoryImpl implements VaccinationRepository {
-    private VaccinationCrudRepository crudRepository;
-    private VaccinationEntityMapper mapper;
-    private UserCrudRepository userCrudRepository;
-    private PetCrudRepository petCrudRepository;
+    private final VaccinationCrudRepository crudRepository;
+    private final VaccinationEntityMapper mapper;
+    private final UserCrudRepository userCrudRepository;
+    private final PetCrudRepository petCrudRepository;
 
     public Vaccination save(Vaccination vaccination){
         VaccinationEntity entity=mapper.toEntity(vaccination);

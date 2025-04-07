@@ -10,26 +10,30 @@ import com.vetapi.domain.entity.Treatment;
 import com.vetapi.domain.entity.User;
 import com.vetapi.domain.entity.Vaccination;
 import com.vetapi.domain.exception.EntityNotFoundException;
+import com.vetapi.domain.exception.InvalidDataException;
 import com.vetapi.domain.repository.PetRepository;
 import com.vetapi.domain.repository.TreatmentRepository;
 import com.vetapi.domain.repository.UserRepository;
 import com.vetapi.domain.repository.VaccinationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
+@Service
 @RequiredArgsConstructor
 public class VaccinationService {
-private VaccinationRepository repository;
-private VaccinationDTOMapper mapper;
-private UserRepository userRepository;
-    private PetRepository petRepository;
+private final VaccinationRepository repository;
+private final VaccinationDTOMapper mapper;
+private final UserRepository userRepository;
+    private final PetRepository petRepository;
 
+    @Transactional
     public VaccinationDTO save(VaccinationCreateDTO vaccination){
 Vaccination vaccination1=mapper.toVaccination(vaccination);
 Optional<User> userV= userRepository.findById(vaccination.getVeterinarianId());
@@ -53,6 +57,7 @@ if (userV.isPresent() && pet.isPresent()){
                 .map(mapper::toVaccinationDTO)
                 .collect(Collectors.toList());
     }
+    @Transactional
     public boolean delete(Long id){
         if (repository.existVaccination(id)){
             repository.delete(id);
@@ -78,8 +83,24 @@ if (userV.isPresent() && pet.isPresent()){
                 .map(mapper::toVaccinationDTO)
                 .collect(Collectors.toList());
    }
-   public VaccinationDTO update(VaccinationUpdateDTO updateDTO, Long id){
-        return null;
+    @Transactional
+    public VaccinationDTO update(VaccinationUpdateDTO updateDTO, Long id) {
+        Vaccination vaccination = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Vaccination not found with ID: " + id));
 
-   }
+        mapper.updateVaccinationFromDTO(updateDTO, vaccination);
+
+        if (vaccination.getApplicationDate() != null &&
+                vaccination.getApplicationDate().isAfter(LocalDate.now())) {
+            throw new InvalidDataException("La fecha de aplicación no puede ser futura");
+        }
+
+        if (vaccination.getNextApplicationDate() != null &&
+                vaccination.getApplicationDate() != null &&
+                vaccination.getNextApplicationDate().isBefore(vaccination.getApplicationDate())) {
+            throw new InvalidDataException("La fecha de próxima aplicación debe ser posterior a la fecha de aplicación");
+        }
+
+        return mapper.toVaccinationDTO(repository.save(vaccination));
+    }
 }

@@ -36,8 +36,12 @@ public class PetService {
     }
 
     public List<PetListDTO> findByCustomerId(Long customerId) {
+        if (!customerRepository.existsById(customerId)) {
+            throw new EntityNotFoundException("Customer not found with ID: " + customerId);
+        }
         return mapper.toPetListDTOList(petRepository.findByCustomerId(customerId));
     }
+
 
     public List<PetListDTO> findBySpecies(String species) {
         return mapper.toPetListDTOList(petRepository.findBySpecies(species));
@@ -60,6 +64,14 @@ public class PetService {
         Customer customer = customerRepository.findById(createDTO.getCustomerId())
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found with ID: " + createDTO.getCustomerId()));
 
+        if (createDTO.getWeight() != null && createDTO.getWeight() <= 0) {
+            throw new IllegalArgumentException("El peso debe ser un número positivo.");
+        }
+
+        if (createDTO.getBirthDate() != null && createDTO.getBirthDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La fecha de nacimiento no puede ser futura.");
+        }
+
         Pet pet = mapper.toPet(createDTO);
         pet.setCustomer(customer);
 
@@ -68,26 +80,40 @@ public class PetService {
 
     @Transactional
     public PetDTO update(Long id, PetUpdateDTO updateDTO) {
-        Pet pet = petRepository.findById(id)
+        Pet existingPet = petRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Pet not found with ID: " + id));
 
-        mapper.updatePetFromDTO(updateDTO, pet);
-        return mapper.toPetDTO(petRepository.save(pet));
+        mapper.updatePetFromDTO(updateDTO, existingPet);
+
+        return mapper.toPetDTO(petRepository.update(id, existingPet));
     }
+
 
     @Transactional
     public void delete(Long id) {
-        if (!petRepository.findById(id).isPresent()) {
-            throw new EntityNotFoundException("Pet not found with ID: " + id);
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pet not found with ID: " + id));
+
+        // Verificar si tiene consultas
+        if (petRepository.hasConsultations(id)) {
+            throw new IllegalStateException("No se puede eliminar la mascota porque tiene consultas asociadas.");
         }
+
         petRepository.delete(id);
     }
 
+
     public int countConsultations(Long petId) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new EntityNotFoundException("Pet not found with ID: " + petId));
+
         return petRepository.countConsultations(petId);
     }
 
     public int countVaccinations(Long petId) {
+        Pet pet = petRepository.findById(petId)
+                .orElseThrow(() -> new EntityNotFoundException("Pet not found with ID: " + petId));
+
         return petRepository.countVaccinations(petId);
     }
 }

@@ -68,4 +68,9 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     public int countPets(Long customerId) {
         return crudRepository.countPetsByCustomerId(customerId);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return crudRepository.existsById(id);
+    }
 }

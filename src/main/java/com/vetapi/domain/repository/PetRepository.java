@@ -1,5 +1,6 @@
 package com.vetapi.domain.repository;
 
+import com.vetapi.application.dto.pet.PetUpdateDTO;
 import com.vetapi.domain.entity.Pet;
 
 import java.time.LocalDate;
@@ -38,6 +39,10 @@ public interface PetRepository {
     // Obtiene la cantidad de consultas de una mascota
     int countConsultations(Long petId);
 
+    boolean hasConsultations(Long petId);
+
     // Obtiene la cantidad de vacunas de una mascota
     int countVaccinations(Long petId);
+
+    Pet update(Long id, Pet pet);
 }

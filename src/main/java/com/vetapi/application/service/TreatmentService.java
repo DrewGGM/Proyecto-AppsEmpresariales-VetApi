@@ -8,36 +8,55 @@ import com.vetapi.domain.entity.Consultation;
 import com.vetapi.domain.entity.Pet;
 import com.vetapi.domain.entity.Treatment;
 import com.vetapi.domain.exception.EntityNotFoundException;
+import com.vetapi.domain.exception.InvalidDataException;
 import com.vetapi.domain.repository.ConsultationRepository;
 import com.vetapi.domain.repository.PetRepository;
 import com.vetapi.domain.repository.TreatmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
+@Service
 @RequiredArgsConstructor
 public class TreatmentService {
-    private TreatmentRepository repository;
-    private TreatmentDTOMapper mapper;
-    private ConsultationRepository consultationRepository;
-    private PetRepository petRepository;
+    private final TreatmentRepository repository;
+    private final TreatmentDTOMapper mapper;
+    private final ConsultationRepository consultationRepository;
+    private final PetRepository petRepository;
 
-    public TreatmentDTO save(TreatmentCreateDTO treatment){
-        Treatment treatment1= mapper.toTreatment(treatment);
-        Optional<Pet> pet= petRepository.findById(treatment.getPetId());
-        Optional<Consultation> consultation= consultationRepository.findById(treatment.getConsultationId());
-        if (pet.isPresent() && consultation.isPresent()) {
-            treatment1.setConsultation(consultation.get());
-            treatment1.setPet(pet.get());
-            return mapper.toTreatmentDto(repository.save(treatment1));
-        }else {
-            throw  new IllegalArgumentException("El pet o la consulta  no existen");
+    @Transactional
+    public TreatmentDTO save(TreatmentCreateDTO treatmentDTO) {
+        // Verificar que las entidades relacionadas existen
+        Pet pet = petRepository.findById(treatmentDTO.getPetId())
+                .orElseThrow(() -> new EntityNotFoundException("Pet not found with ID: " + treatmentDTO.getPetId()));
+
+        Consultation consultation = consultationRepository.findById(treatmentDTO.getConsultationId())
+                .orElseThrow(() -> new EntityNotFoundException("Consultation not found with ID: " + treatmentDTO.getConsultationId()));
+
+        // Verificar que la mascota coincide con la de la consulta
+        if (!pet.getId().equals(consultation.getPet().getId())) {
+            throw new IllegalArgumentException("Pet ID in treatment does not match consultation's pet");
         }
+
+        // Validar fechas
+        if (treatmentDTO.getEndDate() != null &&
+                treatmentDTO.getStartDate().isAfter(treatmentDTO.getEndDate())) {
+            throw new InvalidDataException("Start date cannot be after end date");
+        }
+
+        Treatment treatment = mapper.toTreatment(treatmentDTO);
+        treatment.setPet(pet);
+        treatment.setConsultation(consultation);
+        treatment.setActive(true);
+
+        return mapper.toTreatmentDto(repository.save(treatment));
     }
+
     public TreatmentDTO findById(Long id){
          return repository.findById(id)
         .map(mapper::toTreatmentDto)
@@ -55,6 +74,7 @@ public class TreatmentService {
                 .map(mapper::toTreatmentDto)
                 .collect(Collectors.toList());
     }
+    @Transactional
     public boolean delete(Long id){
         if (repository.findById(id).isPresent()){
             repository.delete(id);
@@ -68,7 +88,23 @@ public class TreatmentService {
                 .map(mapper::toTreatmentDto)
                 .collect(Collectors.toList());
     }
-    public TreatmentDTO update(TreatmentUpdateDTO treatment, Long id){
-        return null;
+    @Transactional
+    public TreatmentDTO update(TreatmentUpdateDTO updateDTO, Long id) {
+        Treatment treatment = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Treatment not found with ID: " + id));
+
+        mapper.updateTreatmentFromDTO(updateDTO, treatment);
+
+        if (treatment.getStartDate() != null && treatment.getEndDate() != null) {
+            if (treatment.getStartDate().isAfter(treatment.getEndDate())) {
+                throw new InvalidDataException("La fecha de inicio no puede ser posterior a la fecha de fin");
+            }
+        }
+
+        if (updateDTO.isCompleted()) {
+            treatment.markAsCompleted();
+        }
+
+        return mapper.toTreatmentDto(repository.save(treatment));
     }
 }

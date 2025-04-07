@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/treatments")
 @RequiredArgsConstructor
 public class TreatmentController {
-    private TreatmentService service;
+    private final TreatmentService service;
     @PostMapping
     public ResponseEntity<TreatmentDTO> create(@Valid @RequestBody TreatmentCreateDTO createDTO) {
         try {

@@ -1,10 +1,8 @@
 package com.vetapi.domain.entity;
 
 import com.vetapi.domain.entity.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Consultation extends BaseEntity {
@@ -22,7 +21,9 @@ public class Consultation extends BaseEntity {
     private String reason;
     private String diagnosis;
     private String observations;
+    @Builder.Default
     private List<Treatment> treatments = new ArrayList<>();
+    @Builder.Default
     private List<Document> documents = new ArrayList<>();
 
     public void addDocument(Document document) {

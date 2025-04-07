@@ -2,10 +2,7 @@ package com.vetapi.infrastructure.persistence.entity;
 
 import com.vetapi.infrastructure.persistence.entity.base.BaseJpaEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
@@ -42,20 +39,19 @@ public class PetEntity extends BaseJpaEntity {
     @Column(name = "photo_url", length = 255)
     private String photoUrl;
 
-    // Una mascota pertenece a un cliente
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerEntity customer;
 
-    // Una mascota tiene muchas consultas
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ConsultationEntity> consultations = new ArrayList<>();
 
-    // Una mascota tiene muchas vacunaciones
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VaccinationEntity> vaccinations = new ArrayList<>();
 
-    // Una mascota tiene muchas citas
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AppointmentEntity> appointments = new ArrayList<>();
 }

@@ -19,22 +19,39 @@ import java.util.stream.Collectors;
 @Repository
 @RequiredArgsConstructor
 public class TreatmentsRepositoryImpl implements TreatmentRepository {
-    private TreatmentCrudRepository crudRepository;
-    private TreatmentEntityMapper mapper;
-    private PetCrudRepository petCrudRepository;
-    private ConsultationCrudRepository consultationCrudRepository;
+    private final TreatmentCrudRepository crudRepository;
+    private final TreatmentEntityMapper mapper;
+    private final PetCrudRepository petCrudRepository;
+    private final ConsultationCrudRepository consultationCrudRepository;
 
     @Override
-    public Treatment save(Treatment treatment){
-        TreatmentEntity entity=mapper.toEntity(treatment);
-       PetEntity petEntity= petCrudRepository.getReferenceById(treatment.getPet().getId());
-        ConsultationEntity consultationEntity= consultationCrudRepository.getReferenceById(treatment.getConsultation().getId());
-        if (petEntity.isActive() && consultationEntity.isActive()) {
-            entity.setPet(petEntity);
-            entity.setConsultation(consultationEntity);
-            return mapper.toTreatment(crudRepository.save(entity));
+    public Treatment save(Treatment treatment) {
+        TreatmentEntity entity = mapper.toEntity(treatment);
+
+        // Obtener las entidades relacionadas
+        PetEntity petEntity = petCrudRepository.getReferenceById(treatment.getPet().getId());
+        ConsultationEntity consultationEntity = consultationCrudRepository.getReferenceById(treatment.getConsultation().getId());
+
+        // Asignar las entidades relacionadas
+        entity.setPet(petEntity);
+        entity.setConsultation(consultationEntity);
+        entity.setActive(true);
+
+        // Guardar y obtener la entidad guardada
+        TreatmentEntity savedEntity = crudRepository.save(entity);
+
+        // Convertir a dominio pero mantener las referencias
+        Treatment savedTreatment = mapper.toTreatment(savedEntity);
+
+        // Asignar manualmente las propiedades que se pierden en el mapeo
+        if (treatment.getPet() != null) {
+            savedTreatment.setPet(treatment.getPet());
         }
-        return null;
+        if (treatment.getConsultation() != null) {
+            savedTreatment.setConsultation(treatment.getConsultation());
+        }
+
+        return savedTreatment;
     }
     @Override
     public Optional<Treatment> findById(Long id){

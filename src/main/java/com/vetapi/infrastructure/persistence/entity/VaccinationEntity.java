@@ -15,11 +15,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class VaccinationEntity extends BaseJpaEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "veterinarian_id", nullable = false)
     private UserEntity veterinarian;
 

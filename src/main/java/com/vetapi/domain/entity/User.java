@@ -1,10 +1,7 @@
 package com.vetapi.domain.entity;
 
 import com.vetapi.domain.entity.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
@@ -23,7 +20,9 @@ public class User extends BaseEntity {
     private String password;
     private String role;
     private LocalDateTime lastAccess;
+    @Builder.Default
     private List<Consultation> consultations = new ArrayList<>();
+    @Builder.Default
     private List<Vaccination> vaccinations = new ArrayList<>();
 
     // Verifica si el email tiene un formato válido

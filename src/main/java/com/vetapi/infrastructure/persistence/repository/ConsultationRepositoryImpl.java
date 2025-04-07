@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ConsultationRepositoryImpl implements ConsultationRepository {
 
-    private ConsultationCrudRepository crudRepository;
-    private PetCrudRepository petCrudRepository;
-    private UserCrudRepository userCrudRepository;
-    private ConsultationEntityMapper mapper;
+    private final ConsultationCrudRepository crudRepository;
+    private final PetCrudRepository petCrudRepository;
+    private final UserCrudRepository userCrudRepository;
+    private final ConsultationEntityMapper mapper;
 
     @Override
     public Consultation save(Consultation consultation){
