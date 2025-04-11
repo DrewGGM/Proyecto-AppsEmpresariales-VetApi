@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class VetapiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(VetapiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(VetapiApplication.class, args);
+    }
 
 }
