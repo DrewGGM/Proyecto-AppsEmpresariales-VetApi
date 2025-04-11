@@ -15,7 +15,7 @@ import java.util.List;
 public interface DocumentDTOMapper {
 
     @Mapping(target = "consultationId", source = "consultation.id")
-    @Mapping(target = "consultationDate", expression = "java(document.getConsultation() != null ? document.getConsultation().getDate().toString() : null)")
+    @Mapping(target = "consultationDate", expression = "java(document.getConsultation() != null && document.getConsultation().getDate() != null ? document.getConsultation().getDate().toString() : null)")
     @Mapping(target = "petName", expression = "java(document.getConsultation() != null && document.getConsultation().getPet() != null ? document.getConsultation().getPet().getName() : null)")
     @Mapping(target = "extension", expression = "java(document.getExtension())")
     @Mapping(target = "isImage", expression = "java(document.isImage())")
