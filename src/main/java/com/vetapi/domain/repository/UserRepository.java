@@ -1,6 +1,10 @@
 package com.vetapi.domain.repository;
 
 import com.vetapi.domain.entity.User;
+import com.vetapi.domain.entity.Consultation;
+import com.vetapi.domain.entity.Vaccination;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,42 +12,22 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    // Obtiene todos los usuarios activos
     List<User> findAll();
-
-    // Obtiene un usuario por su id
     Optional<User> findById(Long id);
-
-    // Obtiene un usuario por su email
     Optional<User> findByEmail(String email);
-
-    // Obtiene usuarios por rol
     List<User> findByRole(String role);
-
-    // Obtiene usuarios que han accedido después de una fecha
     List<User> findByLastAccessAfter(LocalDateTime date);
-
-    // Busca usuarios por nombre o apellido (búsqueda parcial)
     List<User> findByNameOrLastNameContaining(String query);
-
-    // Guarda un usuario (crea o actualiza)
     User save(User user);
-
-    // Elimina un usuario de forma lógica (cambio de estado activo)
     void delete(Long id);
-
-    // Elimina un usuario de definitiva de la base de datos (sin opcion de recuperar)
     boolean hardDelete(Long id);
-
-    // Verifica si existe un usuario con el email indicado
     boolean existsByEmail(String email);
-
-    // Actualiza la contraseña de un usuario
     boolean updatePassword(Long userId, String newPassword);
-
-    // Obtiene la cantidad de consultas realizadas por un veterinario
     int countConsultations(Long userId);
-
-    // Obtiene la cantidad de vacunaciones realizadas por un veterinario
     int countVaccinations(Long userId);
+    int countAppointments(Long userId);
+    List<Consultation> findRecentConsultationsByUser(Long userId, int limit);
+    List<Vaccination> findRecentVaccinationsByUser(Long userId, int limit);
+    Page<User> searchUsers(String search, String role, Boolean active, Pageable pageable);
+    void updatePhotoUrl(Long userId, String photoUrl);
 }

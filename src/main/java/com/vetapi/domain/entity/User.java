@@ -20,6 +20,7 @@ public class User extends BaseEntity {
     private String password;
     private String role;
     private LocalDateTime lastAccess;
+    private String photoUrl;
     @Builder.Default
     private List<Consultation> consultations = new ArrayList<>();
     @Builder.Default

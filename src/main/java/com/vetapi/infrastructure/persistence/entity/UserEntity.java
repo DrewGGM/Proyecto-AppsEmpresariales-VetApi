@@ -36,6 +36,9 @@ public class UserEntity extends BaseJpaEntity {
     @Column(name = "last_access")
     private LocalDateTime lastAccess;
 
+    @Column(name = "photo_url", length = 255)
+    private String photoUrl;
+
     @Builder.Default
     @OneToMany(mappedBy = "veterinarian", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ConsultationEntity> consultations = new ArrayList<>();

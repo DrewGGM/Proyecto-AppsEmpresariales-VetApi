@@ -64,3 +64,4 @@ Thumbs.db
 
 ### JUnit ###
 /test-output/
+.fake
