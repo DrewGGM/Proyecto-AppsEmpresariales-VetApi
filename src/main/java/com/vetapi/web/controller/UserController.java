@@ -213,4 +213,24 @@ public class UserController {
         userService.activate(id);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{userId}/photo")
+    @Operation(summary = "Obtener foto de perfil",
+            description = "Obtiene la URL de la foto de perfil del usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "URL de foto obtenida correctamente",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404",
+                    description = "Usuario no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "500",
+                    description = "Error interno del servidor",
+                    content = @Content)
+    })
+    public ResponseEntity<Map<String, String>> getUserPhoto(
+            @Parameter(description = "ID del usuario", required = true)
+            @PathVariable Long userId) {
+        return userService.getUserPhoto(userId);
+    }
 }

@@ -3,18 +3,23 @@ package com.vetapi.application.service;
 import com.vetapi.application.dto.user.*;
 import com.vetapi.application.mapper.UserDTOMapper;
 import com.vetapi.domain.entity.User;
+import com.vetapi.domain.entity.Consultation;
+import com.vetapi.domain.entity.Vaccination;
 import com.vetapi.domain.exception.EntityNotFoundException;
 import com.vetapi.domain.exception.InvalidDataException;
 import com.vetapi.domain.repository.UserRepository;
 import com.vetapi.infrastructure.security.BcryptHashService;
+import com.vetapi.infrastructure.storage.SupabaseStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +32,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserDTOMapper mapper;
     private final BcryptHashService bcryptHashService;
-    private final StorageService storageService;
+    private final SupabaseStorageService supabaseStorageService;
 
     public List<UserListDTO> findAll() {
         return mapper.toUserListDTOList(userRepository.findAll());
@@ -191,31 +196,43 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
-        // Validate file
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("File is required");
-        }
-
-        String contentType = file.getContentType();
-        if (contentType == null || !contentType.startsWith("image/")) {
-            throw new IllegalArgumentException("File must be an image");
-        }
-
-        // Store file
-        String filename = "user-" + userId + "-" + System.currentTimeMillis() +
-                getFileExtension(file.getOriginalFilename());
-        storageService.store(file, filename);
-
-        // Update user photo URL
-        String photoUrl = "/api/users/" + userId + "/photo/" + filename;
-        user.setPhotoUrl(photoUrl);
-        userRepository.save(user);
-
         Map<String, Object> response = new HashMap<>();
-        response.put("photoUrl", photoUrl);
-        response.put("success", true);
+
+        try {
+            // Eliminar foto anterior si existe
+            if (user.getPhotoUrl() != null && !user.getPhotoUrl().isEmpty()) {
+                supabaseStorageService.deleteImage(user.getPhotoUrl());
+            }
+
+            // Subir nueva foto a Supabase
+            String photoUrl = supabaseStorageService.uploadImage(file, userId);
+
+            // Actualizar usuario con la nueva URL
+            user.setPhotoUrl(photoUrl);
+            userRepository.save(user);
+
+            response.put("photoUrl", photoUrl);
+            response.put("success", true);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error al procesar la imagen: " + e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Error de validación: " + e.getMessage(), e);
+        }
 
         return response;
+    }
+
+    // Método adicional para obtener la foto de un usuario
+    public ResponseEntity<Map<String, String>> getUserPhoto(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+
+        Map<String, String> response = new HashMap<>();
+        response.put("photoUrl", user.getPhotoUrl() != null ? user.getPhotoUrl() : "");
+        response.put("userId", userId.toString());
+
+        return ResponseEntity.ok(response);
     }
 
     private String getFileExtension(String filename) {

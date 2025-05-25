@@ -156,7 +156,7 @@ public class GlobalExceptionHandler {
 
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", "Archivo demasiado grande");
-        errorResponse.put("message", "El archivo excede el tamaño máximo permitido.");
+        errorResponse.put("message", "El archivo excede el tamaño máximo permitido de 10MB.");
 
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(errorResponse);
     }
