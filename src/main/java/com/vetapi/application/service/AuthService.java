@@ -41,12 +41,20 @@ public class AuthService {
             log.warn("User not found for email: {}", request.getEmail());
             return LoginResponse.builder()
                     .success(false)
-                    .message("User not found")
+                    .message("Usuario no encontrado")
                     .build();
         }
 
         User user = userOptional.get();
         log.info("User found - ID: {}, Active: {}, Role: {}", user.getId(), user.isActive(), user.getRole());
+
+        if (!user.isActive()) {
+            log.warn("Login attempt for inactive user: {}", request.getEmail());
+            return LoginResponse.builder()
+                    .success(false)
+                    .message("La cuenta de usuario está inactiva")
+                    .build();
+        }
 
         boolean passwordMatches = bcryptHashService.verifyPassword(request.getPassword(), user.getPassword());
         log.info("Password verification result: {}", passwordMatches);
@@ -55,7 +63,7 @@ public class AuthService {
             log.warn("Invalid credentials for user: {}", request.getEmail());
             return LoginResponse.builder()
                     .success(false)
-                    .message("Invalid credentials")
+                    .message("Credenciales inválidas")
                     .build();
         }
 
@@ -80,7 +88,7 @@ public class AuthService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .success(true)
-                .message("Login successful")
+                .message("Inicio de sesión exitoso")
                 .token(token)
                 .refreshToken(refreshToken)
                 .expiresAt(expiresAt)
@@ -93,7 +101,7 @@ public class AuthService {
             if (!jwtService.isTokenValid(refreshToken)) {
                 return LoginResponse.builder()
                         .success(false)
-                        .message("Invalid or expired refresh token")
+                        .message("Token de actualización inválido o expirado")
                         .build();
             }
 
@@ -103,7 +111,7 @@ public class AuthService {
             if (userOptional.isEmpty()) {
                 return LoginResponse.builder()
                         .success(false)
-                        .message("User not found")
+                        .message("Usuario no encontrado")
                         .build();
             }
 
@@ -122,7 +130,7 @@ public class AuthService {
                     .email(user.getEmail())
                     .role(user.getRole())
                     .success(true)
-                    .message("Token renewed")
+                    .message("Token renovado exitosamente")
                     .token(newToken)
                     .refreshToken(newRefreshToken)
                     .expiresAt(expiresAt)
@@ -131,7 +139,7 @@ public class AuthService {
         } catch (Exception e) {
             return LoginResponse.builder()
                     .success(false)
-                    .message("Error refreshing token")
+                    .message("Error al renovar el token")
                     .build();
         }
     }
@@ -143,7 +151,7 @@ public class AuthService {
         if (userOptional.isEmpty()) {
             // Don't reveal if email exists
             response.put("success", true);
-            response.put("message", "If the email exists, reset instructions have been sent");
+            response.put("message", "Si el correo existe, se han enviado las instrucciones de restablecimiento");
             return response;
         }
 
@@ -154,7 +162,7 @@ public class AuthService {
         // In production, send email here
         // For now, just return success
         response.put("success", true);
-        response.put("message", "Password reset instructions sent to email");
+        response.put("message", "Instrucciones de restablecimiento de contraseña enviadas al correo");
         // In development, include token for testing
         response.put("resetToken", resetToken);
 
@@ -166,21 +174,21 @@ public class AuthService {
 
         if (!newPassword.equals(confirmPassword)) {
             response.put("success", false);
-            response.put("message", "Passwords do not match");
+            response.put("message", "Las contraseñas no coinciden");
             return response;
         }
 
         String email = resetTokens.get(token);
         if (email == null) {
             response.put("success", false);
-            response.put("message", "Invalid or expired reset token");
+            response.put("message", "Token de restablecimiento inválido o expirado");
             return response;
         }
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) {
             response.put("success", false);
-            response.put("message", "User not found");
+            response.put("message", "Usuario no encontrado");
             return response;
         }
 
@@ -192,7 +200,7 @@ public class AuthService {
         resetTokens.remove(token);
 
         response.put("success", true);
-        response.put("message", "Password reset successful");
+        response.put("message", "Contraseña restablecida exitosamente");
         return response;
     }
 }

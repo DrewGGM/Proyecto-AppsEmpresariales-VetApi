@@ -194,4 +194,23 @@ public class UserController {
         userService.hardDelete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/activate")
+    @Operation(summary = "Activar un usuario",
+            description = "Reactiva un usuario que estaba desactivado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Usuario activado correctamente",
+                    content = @Content),
+            @ApiResponse(responseCode = "404",
+                    description = "Usuario no encontrado",
+                    content = @Content),
+            @ApiResponse(responseCode = "500",
+                    description = "Error interno del servidor",
+                    content = @Content)
+    })
+    public ResponseEntity<Void> activate(@PathVariable Long id) {
+        userService.activate(id);
+        return ResponseEntity.ok().build();
+    }
 }

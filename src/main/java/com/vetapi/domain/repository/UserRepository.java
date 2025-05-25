@@ -30,4 +30,5 @@ public interface UserRepository {
     List<Vaccination> findRecentVaccinationsByUser(Long userId, int limit);
     Page<User> searchUsers(String search, String role, Boolean active, Pageable pageable);
     void updatePhotoUrl(Long userId, String photoUrl);
+    void activate(Long id);
 }

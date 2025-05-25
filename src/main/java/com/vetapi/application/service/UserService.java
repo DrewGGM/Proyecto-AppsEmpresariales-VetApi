@@ -224,4 +224,12 @@ public class UserService {
         return lastDot > 0 ? filename.substring(lastDot) : "";
     }
 
+    @Transactional
+    public void activate(Long id) {
+        if (!userRepository.findById(id).isPresent()) {
+            throw new EntityNotFoundException("Usuario no encontrado con ID: " + id);
+        }
+        userRepository.activate(id);
+    }
+
 }

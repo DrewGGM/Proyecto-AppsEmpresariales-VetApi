@@ -183,4 +183,12 @@ public class UserRepositoryImpl implements UserRepository {
         });
     }
 
+    @Override
+    public void activate(Long id) {
+        crudRepository.findById(id).ifPresent(entity -> {
+            entity.setActive(true);
+            crudRepository.save(entity);
+        });
+    }
+
 }
