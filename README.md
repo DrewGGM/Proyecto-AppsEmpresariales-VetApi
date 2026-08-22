@@ -38,9 +38,29 @@ El proyecto sigue una arquitectura basada en Domain-Driven Design (DDD) con las 
 ## Configuración
 
 1. Clonar el repositorio
-2. Configurar la base de datos en `application.yml`
+2. Configurar las credenciales de base de datos (ver abajo)
 3. Ejecutar `./gradlew clean build`
 4. Ejecutar `./gradlew bootRun`
+
+### Credenciales
+
+Las credenciales se leen del entorno, no del repositorio:
+
+| Variable      | Perfil        | Por defecto |
+| ------------- | ------------- | ----------- |
+| `DB_USERNAME` | dev · test    | `root`      |
+| `DB_PASSWORD` | dev · test    | `root`      |
+| `DB_USERNAME` | prod          | *(obligatoria)* |
+| `DB_PASSWORD` | prod          | *(obligatoria)* |
+
+`dev` y `test` traen un valor por defecto para poder clonar y arrancar sin
+configurar nada. El perfil `prod` no define ninguno a propósito: si falta la
+variable, la aplicación no levanta, en vez de arrancar con una credencial
+escrita en el código.
+
+```bash
+DB_USERNAME=vetapi DB_PASSWORD=... ./gradlew bootRun --args='--spring.profiles.active=prod'
+```
 
 ## Documentación API
 
